@@ -1,0 +1,61 @@
+# 2023.09.25 Conclusion. 여기서는 "라우터" 기능만 하고,
+# "local", "dev", "prod", 즉, "local=로컬 컴퓨터=H2 DB", "dev=개발용 서버=MySQL", "prod=운영 서버=Oracle" 이렇게 구분하여,
+# .yml 파일을 관리한다.
+
+---
+spring:
+  profiles:
+    active: prod
+    # 위의 "local", "dev", "prod" 위에 "공백"이 있으면, 에러 나는 경우도 있다.
+
+#---
+#jasypt:
+#  encryptor:
+#    bean: jasyptStringEncryptor
+
+#---
+#application:
+#  security:
+#    jwt:
+#      secret-key: 462D4A614E645266556A586E3272357538782F413F4428472B4B625065536856
+#      expiration: 86400000 # 60000 # 86400000 # 1 day
+#      refresh-token:
+#        expiration: 604800000 # 7 days
+
+
+
+# 2023.09.27 IT 늦공 application.yml
+
+#--- # Start
+#
+#--- # change port
+#server:
+#  port: 8085
+#
+#--- # mvc view
+#spring:
+#  mvc:
+#    view:
+#      prefix: /WEB-INF/views
+#      suffix: .jsp
+#
+#--- # devtools
+#spring:
+#  devtools:
+#    livereload:
+#      enabled: true
+#    restart:
+#      enabled: false
+#
+#---  #oracle settings
+#spring:
+#  datasource:
+#    driver-class-name: oracle.jdbc.OracleDriver
+#    url: jdbc:oracle:thin:@localhost:1521/xe
+#    username: scott
+#    password: tiger
+#
+#--- #mybatis mapper xml
+#mybatis:
+#  mapper-locations: classpath:sqlmapper/*.xml
+#  configuration.map-underscore-to-camel-case: true

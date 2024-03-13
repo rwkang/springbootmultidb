@@ -1,0 +1,93 @@
+# 2023.09.25 Conclusion. 여기서는 "라우터" 기능만 하고,
+# "local", "dev", "prod", 즉, "local=로컬 컴퓨터=H2 DB", "dev=개발용 서버=MySQL", "prod=운영 서버=Oracle" 이렇게 구분하여,
+# .yml 파일을 관리한다.
+
+---
+server:
+  port: 8088
+
+---
+# Live Server
+spring:
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+
+# https://oranthy.tistory.com/m/313 날씨 크롤링.
+--- # https://home.openweathermap.org/api_keys
+openweathermap:
+  key: "1fbfbf78015e00c092f0f0fcab9ff2da"
+
+--- # Thymeleaf
+spring:
+  thymeleaf:
+    cache: false # source reload, front-end reload nothing...
+    prefix: classpath:templates/
+    #    prefix: file:src/main/resources/templates # classpath:templates/
+    suffix: .html
+    mode: HTML
+    check-template-location: true
+
+--- # multi datasource
+# https://github.com/ohhoonim/springboot3-demo/blob/main/src/main/resources/application-dev.yml
+spring:
+  datasource:
+    hikari:
+      #      primary:
+      #        driver-class-name: org.mariadb.jdbc.Driver
+      #        jdbc-url: jdbc:mariadb://192.168.1.253:3306/localdb
+      #        username: matthew
+      #        password: ENC(2CTYlgRXmYmlDbJkE9dMV9JQnEAnxNWL)
+      #      secondary:
+      #        driver-class-name: org.postgresql.Driver
+      #        jdbc-url: jdbc:postgresql://192.168.1.253/postgres
+      #        username: matthew
+      #        password: ENC(2CTYlgRXmYmlDbJkE9dMV9JQnEAnxNWL)
+
+      primary:
+        #        url: ENC(FDsnvImt/YaPpCisNLzh8Fx8c6sXl6a0AIp9CLTlIWzj+kh2MUHDYeTELnJyLHg8ObMtGLW7p4zfLnG3Z/Qkm1sKTPkILJPRMIcQzE7Q14qffw6oFFuVsw==)
+        # url: jdbc:mysql://localhost:3306/powerapp?serverTimezone=UTC&characterEncoding=UTF-8
+        #        driver-class-name: ENC(uUqoMM14aF3YxUrx4mbMMoA1meuXRbNgFAtKLWu37ZJE8alumdZjFw==)
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3306/powerapp?serverTimezone=UTC&characterEncoding=UTF-8
+        #        username: ENC(muc9NgC7JAvoW2VMyGJmVQ==)
+        username: "sa"
+        #        password: ENC(dJCRCql0gN/hPdLE+CQWtHhRumVQa+3w)
+        password: "*963210z"
+
+      secondary:
+        driver-class-name: oracle.jdbc.OracleDriver
+        jdbc-url: jdbc:oracle:thin:@localhost:1521/xe # 멀티 DB 사용 시에는 반드시 여기(jdbc-url)로 연결 할 것.
+        #        url: jdbc:oracle:thin:@localhost:1521/xe # 오라클 단독 사용 시에는 여기로.
+        username: scott
+        password: tiger
+
+--- # JPA
+spring:
+  jpa:
+    #    database-platform: org.hibernate.dialect.MariaDB103Dialect # mariadb
+    #    database-platform: org.hibernate.dialect.mariadb53dialect # mariadb : 이건 안 된다네... 난 안 해봄.
+    #    database-platform: org.hibernate.dialect.MySQL5Dialect # 4강에서 세팅한 것.
+    #    database-platform: org.hibernate.dialect.MySQL8Dialect
+    #    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false
+    # 아래는 비 추천. 대신에 logging.level ~~ 사용을 추천.
+    show_sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        #        use_sql_comments: true
+        #        query:
+        #          in_clause_parameter_padding: true
+        # SQL문이 실행될 때 백틱(`)로 테이블과 컬럼을 자동으로 감싸준다.
+        globally_quoted_identifier: true
+
+    hibernate:
+      # 여기는 운영 시에는 반드시 "Update" 또는 "Valid "로 전환해야 한다.
+#      ddl-auto: none
+      ddl-auto: create
+#      ddl-auto: create-drop
+#      ddl-auto: update
+#    generate-ddl: true
